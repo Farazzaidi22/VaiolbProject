@@ -21,6 +21,12 @@ def Create_DF(file_path):
     # print(df['Bearbetning: Start'])
     return df
 
+def Create_DF_from_CSV(file_path):
+    print('Creating data frame of file ', file_path , '...')
+    df = pd.read_csv(file_path)
+    # print(df['Bearbetning: Start'])
+    return df
+
 def Create_DFs_List(file_path, sheet_list):
     dict_df = pd.read_excel( file_path, sheet_name=sheet_list )
     return dict_df
@@ -198,7 +204,7 @@ def Clean_IPR_Df_Data(IPR_df: pd.DataFrame, H2020_df: pd.DataFrame, IPR_file_pat
 
 
 
-def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code , output_dict, year):
+def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code , output_dict, year, Patent_df):
     ### 1 - Looking for code in column K 'NUTS 3 Code'
         
         # H2020_df_DED51_pub = H2020_df.loc[H2020_df['NUTS 3 Code'] == code]
@@ -267,6 +273,19 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code , output_d
     ######### FOR COLUMN U Total co-financing of firms (aggregated per region/year)
     
         output_dict["Total co-financing of firms (aggregated per region/year)"] +=  For_Col_U(year, H2020_df_DED51_prc)
+        
+    ######### FOR COLUMN V Total number of patents (single applicant in that region)
+    
+        output_dict["Total number of patents (single applicant in that region)"] +=  For_Col_V_W_and_X(Patent_df, 'Total number of patents (single applicant in that region)', code)
+    
+    ######### FOR COLUMN W Total number of patents
+    
+        output_dict["Total number of patents"] +=  For_Col_V_W_and_X(Patent_df, 'Total number of patents', code)
+
+    ######### FOR COLUMN X Total number of patents (at least one in that region and at least one from another NUTS 3)
+    
+        output_dict["Total number of patents (at least one in that region and at least one from another NUTS 3)"] +=  For_Col_V_W_and_X(Patent_df, 'Total number of patents (at least one in that region and at least one from another NUTS 3)', code)
+
 
         return output_dict
 
@@ -565,8 +584,23 @@ def For_Col_U(year_arr, H2020_df_DED51_prc: pd.DataFrame):
     return patt_count_array
 
 
+def For_Col_V_W_and_X(Patent_df: pd.DataFrame, column_name, code):
+    
+    patt_count_array = ['','','','','','','','','']
+    
+    Patent_df_Filtered = Patent_df.loc[Patent_df['NUTS 3 Code'] == code]
+    
+    i = 0
+    for Patent_df_index, Patent_df_row in Patent_df_Filtered.iterrows():
+        
+        val = Patent_df_row[column_name]
+        patt_count_array[i] = val
+        i = i + 1
 
-def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path): #NUTS3_file_path, IPR_file_path, abs_path):
+    return patt_count_array
+
+
+def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path): #NUTS3_file_path, IPR_file_path, abs_path):
 
 ######### FOR COLUMN K for Total number of public bodies participations, running for at least one year
 
@@ -577,6 +611,10 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path): #NUTS3_file
     IPR_df = Create_DF(IPR_file_path)
 
     # IPR_df = Clean_IPR_Df_Data(IPR_df, H2020_df, IPR_file_path, abs_path)
+    
+    # Opening Patents.xlsx
+    Patent_df = Create_DF_from_CSV(Patents_file_path)
+    
 
 
 ### columns
@@ -595,9 +633,9 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path): #NUTS3_file
     'Total number of Foreground PR (of firms)': [],
     'Total number of signed contracts by firms': [],
     'Total co-financing of firms (aggregated per region/year)': [],
-    # 'Total number of patents (single applicant in that region)': [],
-    # 'Total number of patents': [],
-    # 'Total number of patents (at least one in that region and at least one from another NUTS 3)': [],
+    'Total number of patents (single applicant in that region)': [],
+    'Total number of patents': [],
+    'Total number of patents (at least one in that region and at least one from another NUTS 3)': [],
 
     }
 
@@ -697,7 +735,7 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path): #NUTS3_file
             output_dict["Year"].append(y)
 
 
-        output_dict = Cals_For_Codes(H2020_df, IPR_df, i, output_dict, years)
+        output_dict = Cals_For_Codes(H2020_df, IPR_df, i, output_dict, years, Patent_df)
 
 
     print(output_dict)
@@ -727,7 +765,7 @@ def Start_Editing(NUTS3_file_path, H2020_file_path, IPR_file_path):
     
     print('Started!!!!!')
     abs_path = Path(H2020_file_path).parent
-    main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path)
+    main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path)
 
 
 
@@ -741,4 +779,4 @@ Patents_file_path = "E:\Freelance/vaiolb\Main\Input_output/PATENTS.csv"
 abs_path = Path(H2020_file_path).parent
 
 
-main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path) 
+main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path) 
