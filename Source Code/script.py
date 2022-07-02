@@ -251,14 +251,18 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code , output_d
         H2020_df_DED51_prc = H2020_df.loc[H2020_df['NUTS 3 Code'] == code]
         
         H2020_df_DED51_prc = H2020_df_DED51_prc.loc[H2020_df_DED51_prc["Legal Entity Type"] == "PRC"]
-        
-        
+
         output_dict["Total number of background IPR"] +=  For_Col_R_and_S(year, IPR_df, 'BACKGROUND', H2020_df, H2020_df_DED51_prc, code)
         
-    ######### FOR COLUMN S Total number of background IPR
+    ######### FOR COLUMN S Total number of Foreground PR (of firms)
         output_dict["Total number of Foreground PR (of firms)"] +=  For_Col_R_and_S(year, IPR_df, 'FOREGROUND', H2020_df, H2020_df_DED51_prc, code)
         
-
+        
+    ######### FOR COLUMN T Total number of signed contracts by firms
+    
+        H2020_df_DED51_prc['Contract signature date'] = pd.to_datetime(H2020_df_DED51_prc['Contract signature date'], format="%d/%m/%Y", errors='coerce')
+    
+        output_dict["Total number of signed contracts by firms"] +=  For_Col_T(year, H2020_df_DED51_prc)
     
 
         return output_dict
@@ -494,6 +498,38 @@ def For_Col_R_and_S(year_arr, IPR_df, IPR_Type,  H2020_df, H2020_df_DED51_prc, c
     return patt_count_array
 
 
+def For_Col_T(year_arr, H2020_df_DED51_prc: pd.DataFrame):
+    
+    patt_count_array = [0,0,0,0,0,0,0,0,0]
+
+    H2020_df_DED51_prc = H2020_df_DED51_prc.sort_values('Contract signature date')
+    print(H2020_df_DED51_prc['Contract signature date'])
+    
+    for year in year_arr:
+        
+        print(year)
+        
+        H2020_df_Filtered_by_Year = H2020_df_DED51_prc[H2020_df_DED51_prc['Contract signature date'].dt.year == year]
+        print(H2020_df_Filtered_by_Year['Contract signature date'])
+        
+        if not H2020_df_Filtered_by_Year.empty:
+            
+            H2020_prc_Uid_df = H2020_df_Filtered_by_Year.drop_duplicates('Organisation ID', keep='first')
+            print(H2020_prc_Uid_df)
+            
+            row_count = H2020_prc_Uid_df.shape[0]
+            print(row_count)
+            
+            index = year_arr.index(year)
+            patt_count_array[index] = row_count
+            print(patt_count_array)
+        
+        else:
+            continue
+    
+    return patt_count_array
+
+
 
 def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path): #NUTS3_file_path, IPR_file_path, abs_path):
 
@@ -522,7 +558,7 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path): #NUTS3_file
     
     'Total number of background IPR': [],
     'Total number of Foreground PR (of firms)': [],
-    # 'Total number of signed contracts by firms': [],
+    'Total number of signed contracts by firms': [],
     # 'Tota co-financing of firms (aggregated per region/year)': [],
     # 'Total number of patents (single applicant in that region)': [],
     # 'Total number of patents': [],
