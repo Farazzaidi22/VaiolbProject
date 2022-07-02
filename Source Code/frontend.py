@@ -26,12 +26,20 @@ def get_H2020_file_path():
         H2020_entry_error_label.config(text="select a valid file.")
 
 def get_IPR_folder_path():
-    ref_file_2 = filedialog.askopenfilename(initialdir = "/home", title = "Select your first reference file", filetypes = [('Excel', ('*.xls', '*.xlsx'))])
+    ref_file_2 = filedialog.askopenfilename(initialdir = "/home", title = "Select your first IPR file", filetypes = [('Excel', ('*.xls', '*.xlsx'))])
     if ref_file_2:
         IPR_folder.set(ref_file_2)
         IPR_entry_error_label.config(text="")
     else:
         IPR_entry_error_label.config(text="select a valid file.")
+
+def get_Patents_folder_path():
+    ref_file_3 = filedialog.askopenfilename(initialdir = "/home", title = "Select your first Patents file", filetypes = [("CSV Files",("*.csv"))])
+    if ref_file_3:
+        Patents_folder.set(ref_file_3)
+        Patents_entry_error_label.config(text="")
+    else:
+        Patents_entry_error_label.config(text="select a valid file.")
 
 def start_process():
     try:
@@ -44,6 +52,8 @@ def start_process():
     nuts3_file_path = nuts3_file.get()
     H2020_file_path = H2020_folder.get()
     IPR_folder_path = IPR_folder.get()
+    Patents_folder_path = Patents_folder.get()
+    
  
 
     if not nuts3_file_path:
@@ -52,12 +62,15 @@ def start_process():
         H2020_entry_error_label.config(text="select a valid folder.")
     elif not IPR_folder_path:
         IPR_entry_error_label.config(text="select a valid folder.")
+    elif not IPR_folder_path:
+        Patents_entry_error_label.config(text="select a valid folder.")
     else:
+        Patents_entry_error_label.config(text="")
         IPR_entry_error_label.config(text="")
         H2020_entry_error_label.config(text="")
         nuts3_entry_error_label.config(text="")
         try:
-            Start_Editing(nuts3_file_path, H2020_file_path, IPR_folder_path)
+            Start_Editing(nuts3_file_path, H2020_file_path, IPR_folder_path, Patents_folder_path)
             process_info_label.config(text="Success: files generated.")
         except:
             process_error_label.config(text="Error: Check error.txt file")
@@ -75,6 +88,7 @@ window.maxsize(700, 400)
 nuts3_file= StringVar()
 H2020_folder = StringVar()
 IPR_folder = StringVar()
+Patents_folder = StringVar()
 Nyinflyttade_folder = StringVar()
 Ny_fil_med_avlidna_folder = StringVar()
 
@@ -120,6 +134,19 @@ IPR_entry_error_label.place(x=160, y=165)
 
 IPR_button = ttk.Button(window, text="Browse Folder", command=get_IPR_folder_path)
 IPR_button.place(x=500, y=140)
+
+################## Patents
+Patents_label = Label(window ,text="Patents file ")
+Patents_label.place(x=10, y=180)
+
+Patents_entry = Entry(window, textvariable = Patents_folder, width=60)
+Patents_entry.place(x=100, y=180)
+
+Patents_entry_error_label = Label(window, text="", fg='red', font=("Helvetica", 10))
+Patents_entry_error_label.place(x=160, y=205)
+
+Patents_button = ttk.Button(window, text="Browse Folder", command=get_Patents_folder_path)
+Patents_button.place(x=500, y=180)
 
 
 record_error_label = Label(window, text="", fg='red', font=("Helvetica", 10))

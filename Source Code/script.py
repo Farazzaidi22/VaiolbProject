@@ -671,10 +671,10 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     
     print("Loaded!!!!")
 
-    # nut3_code_list = NUTS3_df.get('All regions')['Code 2021'].unique()
+    nut3_code_list = NUTS3_df.get('All regions')['Code 2021'].unique()
 
-    nut3_code_list = ['DED51', 'ES300', 'ES705']
-    print(nut3_code_list)
+    # nut3_code_list = ['DED51', 'ES300', 'ES705']
+    # print(nut3_code_list)
 
     df_ALL_REG = NUTS3_df.get('All regions')
     df_URB_RUL_REG = NUTS3_df.get('Urban-rural')
@@ -768,7 +768,7 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     print('Finished!!!!')
 
 
-def Start_Editing(NUTS3_file_path, H2020_file_path, IPR_file_path):
+def Start_Editing(NUTS3_file_path, H2020_file_path, IPR_file_path, Patents_file_path):
     
     print('Started!!!!!')
     abs_path = Path(H2020_file_path).parent
@@ -777,13 +777,13 @@ def Start_Editing(NUTS3_file_path, H2020_file_path, IPR_file_path):
 
 
 
-NUTS3_file_path = "E:\Freelance/vaiolb\Main\Input_output/NUTS3.xlsx"
-H2020_file_path ="E:\Freelance/vaiolb\Main\Input_output/H2020rev SECOND ROUND.xlsx"
-IPR_file_path = "E:\Freelance/vaiolb\Main\Input_output/IPR(modified).xlsx"
-Patents_file_path = "E:\Freelance/vaiolb\Main\Input_output/PATENTS.csv"
+# NUTS3_file_path = "E:\Freelance/vaiolb\Main\Input_output/NUTS3.xlsx"
+# H2020_file_path ="E:\Freelance/vaiolb\Main\Input_output/H2020rev SECOND ROUND.xlsx"
+# IPR_file_path = "E:\Freelance/vaiolb\Main\Input_output/IPR(modified).xlsx"
+# Patents_file_path = "E:\Freelance/vaiolb\Main\Input_output/PATENTS.csv"
 
 
-abs_path = Path(H2020_file_path).parent
+# abs_path = Path(H2020_file_path).parent
 
 
-main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path) 
+# main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path) 
