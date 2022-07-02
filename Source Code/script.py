@@ -261,9 +261,9 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code , output_d
         output_dict["Total number of background IPR"] +=  For_Col_R_and_S(year, IPR_df, 'BACKGROUND', H2020_df, H2020_df_DED51_prc, code)
         
     ######### FOR COLUMN S Total number of Foreground PR (of firms)
+        
         output_dict["Total number of Foreground PR (of firms)"] +=  For_Col_R_and_S(year, IPR_df, 'FOREGROUND', H2020_df, H2020_df_DED51_prc, code)
-        
-        
+
     ######### FOR COLUMN T Total number of signed contracts by firms
     
         H2020_df_DED51_prc['Contract signature date'] = pd.to_datetime(H2020_df_DED51_prc['Contract signature date'], format="%d/%m/%Y", errors='coerce')
@@ -462,8 +462,8 @@ def For_Col_R_and_S(year_arr, IPR_df, IPR_Type,  H2020_df, H2020_df_DED51_prc, c
 
     H2020_df_DED51_prc = H2020_df_DED51_prc.sort_values('Organisation ID')
     
-    # H2020_prc_Uid_df = H2020_df_DED51_prc.drop_duplicates('Project ID', keep='first')
-    # print(H2020_prc_Uid_df)
+    H2020_df_DED51_prc = H2020_df_DED51_prc.drop_duplicates('Organisation ID', keep='first')
+    print(H2020_df_DED51_prc)
 
     for h2020_index, h2020_row in H2020_df_DED51_prc.iterrows():
 
