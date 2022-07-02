@@ -205,85 +205,84 @@ def Clean_IPR_Df_Data(IPR_df: pd.DataFrame, H2020_df: pd.DataFrame, IPR_file_pat
 
 
 def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code , output_dict, year, Patent_df):
+
+#Round 1
+
     ### 1 - Looking for code in column K 'NUTS 3 Code'
         
-        # H2020_df_DED51_pub = H2020_df.loc[H2020_df['NUTS 3 Code'] == code]
-        # print(H2020_df_DED51_pub)
-
+        H2020_df_DED51_pub = H2020_df.loc[H2020_df['NUTS 3 Code'] == code]
 
     ### 2 - Filtering only Public body from column H 'Legal Entity Type'
         
-        # H2020_df_DED51_pub = H2020_df_DED51_pub.loc[H2020_df_DED51_pub["Legal Entity Type"] == "PUB"]
-        # print(H2020_df_DED51_pub["Project Start Date"])
+        H2020_df_DED51_pub = H2020_df_DED51_pub.loc[H2020_df_DED51_pub["Legal Entity Type"] == "PUB"]
 
-    ### 3 - Going to columns T and U for checking the projects life times.
+    ######### FOR COLUMN K for Total number of  public bodies participations, running for at least one year
 
-        # H2020_df_DED51_pub['Project Start Date'] = pd.to_datetime(H2020_df_DED51_pub['Project Start Date'], format="%d/%m/%Y", errors='coerce')
-        # H2020_df_DED51_pub['Project End Date'] = pd.to_datetime(H2020_df_DED51_pub['Project End Date'], format="%d/%m/%Y", errors='coerce')
-
-
-        # output_dict["Total number of  public bodies participations, running for at least one year"] += For_Col_K(year, H2020_df_DED51_pub)
+        output_dict["Total number of  public bodies participations, running for at least one year"] += For_Col_K(year, H2020_df_DED51_pub)
 
     ######### FOR COLUMN L for Total number of unique projects involving public bodies, running for at least one year
 
-        # output_dict["Total number of unique  projects involving public bodies, running for at least one year"] +=  For_Col_L(year, H2020_df_DED51_pub)
+        output_dict["Total number of unique  projects involving public bodies, running for at least one year"] +=  For_Col_L(year, H2020_df_DED51_pub)
 
     ######### FOR COLUMN M for Number project months acummulating  since 2014
 
-        # output_dict["Number project months acummulating  since 2014"] +=  For_Col_M(year, H2020_df_DED51_pub)
+        output_dict["Number project months acummulating  since 2014"] +=  For_Col_M(year, H2020_df_DED51_pub)
 
     ######### FOR COLUMN N for Multiannual EU funds commitment benefitting public bodies aggregated at regional level (date of contract signature  counts)
         
-        # H2020_df_DED51_pub['Contract signature date'] = pd.to_datetime(H2020_df_DED51_pub['Contract signature date'], format="%d/%m/%Y", errors='coerce')
+        H2020_df_DED51_pub['Contract signature date'] = pd.to_datetime(H2020_df_DED51_pub['Contract signature date'], format="%d/%m/%Y", errors='coerce')
 
-        # output_dict["Multiannual EU funds commitment benefitting   public bodies aggregated at regional level (date of contract signature  counts)"] +=  For_Col_N(year, H2020_df_DED51_pub)
-
+        output_dict["Multiannual EU funds commitment benefitting   public bodies aggregated at regional level (date of contract signature  counts)"] +=  For_Col_N(year, H2020_df_DED51_pub)
 
     ######### FOR COLUMN O for Multiannual self financing  commitment benefitting   public bodies aggregated at regional level (date of contract signature  counts)
-        
-        # output_dict["Multiannual self financing  commitment benefitting   public bodies aggregated at regional level (date of contract signature  counts)"] +=  For_Col_O(year, H2020_df_DED51_pub)
 
+        output_dict["Multiannual self financing  commitment benefitting   public bodies aggregated at regional level (date of contract signature  counts)"] +=  For_Col_O(year, H2020_df_DED51_pub)
 
     ######### FOR COLUMN P Total number of background IPR from another region accessed via a project that has been running 1 year (counted once per project lifetime)
 
-        # output_dict["Total number of background IPR from another region accessed via a project that has been running 1 year (counted once per project lifetime)"] +=  For_Col_P_and_Q(year, IPR_df, 'BACKGROUND', H2020_df, H2020_df_DED51_pub, code)
+        output_dict["Total number of background IPR from another region accessed via a project that has been running 1 year (counted once per project lifetime)"] +=  For_Col_P_and_Q(year, IPR_df, 'BACKGROUND', H2020_df, H2020_df_DED51_pub, code)
 
     ######### FOR COLUMN Q Total number of foreground IPR from another region accessed via a project that has been running 1 year (counted once per project lifetime)
 
-        # output_dict["Total number of foreground IPR from another region accessed via a project that has been running 1 year (counted once per project lifetime)"] +=  For_Col_P_and_Q(year, IPR_df, 'FOREGROUND', H2020_df, H2020_df_DED51_pub, code)
+        output_dict["Total number of foreground IPR from another region accessed via a project that has been running 1 year (counted once per project lifetime)"] +=  For_Col_P_and_Q(year, IPR_df, 'FOREGROUND', H2020_df, H2020_df_DED51_pub, code)
         
-    ######### FOR COLUMN R Total number of background IPR
-    
+
+# Round 2
+
+    ### 1 - Looking for code in column K 'NUTS 3 Code'
+
         H2020_df_DED51_prc = H2020_df.loc[H2020_df['NUTS 3 Code'] == code]
-        
+    
+    ### 2 - Filtering only Public body from column H 'Legal Entity Type'
+
         H2020_df_DED51_prc = H2020_df_DED51_prc.loc[H2020_df_DED51_prc["Legal Entity Type"] == "PRC"]
 
+    ######### FOR COLUMN R Total number of background IPR
+
         output_dict["Total number of background IPR"] +=  For_Col_R_and_S(year, IPR_df, 'BACKGROUND', H2020_df, H2020_df_DED51_prc, code)
-        
+
     ######### FOR COLUMN S Total number of Foreground PR (of firms)
-        
+
         output_dict["Total number of Foreground PR (of firms)"] +=  For_Col_R_and_S(year, IPR_df, 'FOREGROUND', H2020_df, H2020_df_DED51_prc, code)
 
     ######### FOR COLUMN T Total number of signed contracts by firms
-    
-        H2020_df_DED51_prc['Contract signature date'] = pd.to_datetime(H2020_df_DED51_prc['Contract signature date'], format="%d/%m/%Y", errors='coerce')
-    
+
         output_dict["Total number of signed contracts by firms"] +=  For_Col_T(year, H2020_df_DED51_prc)
-        
+
     ######### FOR COLUMN U Total co-financing of firms (aggregated per region/year)
-    
+
         output_dict["Total co-financing of firms (aggregated per region/year)"] +=  For_Col_U(year, H2020_df_DED51_prc)
-        
+
     ######### FOR COLUMN V Total number of patents (single applicant in that region)
-    
+
         output_dict["Total number of patents (single applicant in that region)"] +=  For_Col_V_W_and_X(Patent_df, 'Total number of patents (single applicant in that region)', code)
-    
+
     ######### FOR COLUMN W Total number of patents
-    
+
         output_dict["Total number of patents"] +=  For_Col_V_W_and_X(Patent_df, 'Total number of patents', code)
 
     ######### FOR COLUMN X Total number of patents (at least one in that region and at least one from another NUTS 3)
-    
+
         output_dict["Total number of patents (at least one in that region and at least one from another NUTS 3)"] +=  For_Col_V_W_and_X(Patent_df, 'Total number of patents (at least one in that region and at least one from another NUTS 3)', code)
 
 
@@ -408,7 +407,7 @@ def For_Col_O(year_arr, df):
     return eu_contribution_count
 
 
-def For_Col_P_and_Q(year_arr, IPR_df, IPR_Type,  H2020_df, H2020_df_DED51_pub, code):
+def For_Col_P_and_Q(year_arr, IPR_df: pd.DataFrame, IPR_Type,  H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFrame, code):
 
     patt_count_array = [0,0,0,0,0,0,0,0,0]
 
@@ -444,7 +443,7 @@ def For_Col_P_and_Q(year_arr, IPR_df, IPR_Type,  H2020_df, H2020_df_DED51_pub, c
                             
                                 if row_1['NUTS 3 Code'] != code:
 
-                                    project_start_year = datetime.datetime.strptime(row_1['Project Start Date'], '%d/%m/%Y').year
+                                    project_start_year = row_1['Project Start Date'].year
                                     print(project_start_year)
 
                                     if project_start_year in year_arr:
@@ -614,20 +613,20 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     
     # Opening Patents.xlsx
     Patent_df = Create_DF_from_CSV(Patents_file_path)
-    
 
 
 ### columns
     output_dict = { 
     
     'Country': [], 'NUTS3': [], 'Urban-rural': [], 'Metropolitan': [], 'urban-rural remoteness': [], 'Border region': [], 'Coastal region': [], 'Mountain region': [], 'Island': [], 'Year': [] , 
-    # 'Total number of  public bodies participations, running for at least one year': [], 
-    # 'Total number of unique  projects involving public bodies, running for at least one year': [], 
-    # 'Number project months acummulating  since 2014': [], 
-    # 'Multiannual EU funds commitment benefitting   public bodies aggregated at regional level (date of contract signature  counts)': [], 
-    # 'Multiannual self financing  commitment benefitting   public bodies aggregated at regional level (date of contract signature  counts)': [],
-    # 'Total number of background IPR from another region accessed via a project that has been running 1 year (counted once per project lifetime)': [], 
-    # 'Total number of foreground IPR from another region accessed via a project that has been running 1 year (counted once per project lifetime)': [],
+    
+    'Total number of  public bodies participations, running for at least one year': [], 
+    'Total number of unique  projects involving public bodies, running for at least one year': [], 
+    'Number project months acummulating  since 2014': [], 
+    'Multiannual EU funds commitment benefitting   public bodies aggregated at regional level (date of contract signature  counts)': [], 
+    'Multiannual self financing  commitment benefitting   public bodies aggregated at regional level (date of contract signature  counts)': [],
+    'Total number of background IPR from another region accessed via a project that has been running 1 year (counted once per project lifetime)': [], 
+    'Total number of foreground IPR from another region accessed via a project that has been running 1 year (counted once per project lifetime)': [],
     
     'Total number of background IPR': [],
     'Total number of Foreground PR (of firms)': [],
@@ -652,6 +651,14 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
 
     years = Extract_Year_From_Dates(H2020_df, "Project End Date", years)
     years.sort()
+    print(years)
+    
+    
+# Changing the Column Formamt to Date-time 
+    
+    H2020_df['Project Start Date']       = pd.to_datetime(H2020_df['Project Start Date'], format="%d/%m/%Y", errors='coerce')
+    H2020_df['Project End Date']         = pd.to_datetime(H2020_df['Project End Date'], format="%d/%m/%Y", errors='coerce')
+    H2020_df['Contract signature date']  = pd.to_datetime(H2020_df['Contract signature date'], format="%d/%m/%Y", errors='coerce')
 
 
 
