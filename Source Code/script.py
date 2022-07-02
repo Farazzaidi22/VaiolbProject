@@ -263,7 +263,10 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code , output_d
         H2020_df_DED51_prc['Contract signature date'] = pd.to_datetime(H2020_df_DED51_prc['Contract signature date'], format="%d/%m/%Y", errors='coerce')
     
         output_dict["Total number of signed contracts by firms"] +=  For_Col_T(year, H2020_df_DED51_prc)
+        
+    ######### FOR COLUMN U Total co-financing of firms (aggregated per region/year)
     
+        output_dict["Total co-financing of firms (aggregated per region/year)"] +=  For_Col_U(year, H2020_df_DED51_prc)
 
         return output_dict
 
@@ -530,6 +533,38 @@ def For_Col_T(year_arr, H2020_df_DED51_prc: pd.DataFrame):
     return patt_count_array
 
 
+def For_Col_U(year_arr, H2020_df_DED51_prc: pd.DataFrame):
+    
+    patt_count_array = [0,0,0,0,0,0,0,0,0]
+    
+    H2020_df_DED51_prc = H2020_df_DED51_prc.sort_values('Contract signature date')
+    print(H2020_df_DED51_prc['Contract signature date'])
+
+    for year in year_arr:
+
+        print(year)
+        
+        H2020_df_Filtered_by_Year = H2020_df_DED51_prc[H2020_df_DED51_prc['Contract signature date'].dt.year == year]
+        print(H2020_df_Filtered_by_Year['Contract signature date'])
+
+        if not H2020_df_Filtered_by_Year.empty:
+            sum = 0
+            
+            for H2020_df_prc_index, H2020_df_prc_row in H2020_df_Filtered_by_Year.iterrows():
+                
+                sub = H2020_df_prc_row['H2020 Total Cost'] - H2020_df_prc_row['H2020 Net EU Contribution']
+                sum = sum + sub
+                
+            index = year_arr.index(year)
+            patt_count_array[index] = sum
+            print(patt_count_array)
+        
+        else:
+            continue
+    
+    return patt_count_array
+
+
 
 def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path): #NUTS3_file_path, IPR_file_path, abs_path):
 
@@ -559,7 +594,7 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path): #NUTS3_file
     'Total number of background IPR': [],
     'Total number of Foreground PR (of firms)': [],
     'Total number of signed contracts by firms': [],
-    # 'Tota co-financing of firms (aggregated per region/year)': [],
+    'Total co-financing of firms (aggregated per region/year)': [],
     # 'Total number of patents (single applicant in that region)': [],
     # 'Total number of patents': [],
     # 'Total number of patents (at least one in that region and at least one from another NUTS 3)': [],
