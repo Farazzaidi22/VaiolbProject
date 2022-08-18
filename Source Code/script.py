@@ -329,6 +329,10 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code , output_d
     ######### FOR COLUMN AF Number of signed contracts by universities / research organisations
     
         output_dict["Number of signed contracts by universities / research organisations"] +=  For_Col_AF(year, H2020_df_DED51_hes_and_rec)
+    
+    ######### FOR COLUMN AG Budget absorbed by universities / research organisations
+    
+        output_dict["Budget absorbed by universities / research organisations"] +=  For_Col_AG(year, H2020_df_DED51_hes_and_rec)
         
         return output_dict
 
@@ -947,6 +951,7 @@ def For_Col_AE(year_arr, H2020_df_DED51_prc: pd.DataFrame):
     
     return patt_count_array
 
+
 def For_Col_AF(year_arr, H2020_df_DED51_hes_and_rec: pd.DataFrame):
     
     patt_count_array = [0,0,0,0,0,0,0,0,0]
@@ -964,6 +969,27 @@ def For_Col_AF(year_arr, H2020_df_DED51_hes_and_rec: pd.DataFrame):
 
         index = year_arr.index(year)
         patt_count_array[index] += count_row
+        print(patt_count_array)
+    
+    return patt_count_array
+
+def For_Col_AG(year_arr, H2020_df_DED51_hes_and_rec: pd.DataFrame):
+    
+    patt_count_array = [0,0,0,0,0,0,0,0,0]
+
+    H2020_df_DED51_hes_and_rec = H2020_df_DED51_hes_and_rec.sort_values('Organisation ID')
+    
+    for year in year_arr:
+        print(year)
+
+        H2020_df_DED51_prc_filtered = H2020_df_DED51_hes_and_rec[ (H2020_df_DED51_hes_and_rec['Contract signature date'].dt.strftime('%Y') == str(year)) ]
+        print(H2020_df_DED51_prc_filtered)
+
+        sum_of_col = H2020_df_DED51_prc_filtered['H2020 Net EU Contribution'].sum()
+        print(sum_of_col)
+
+        index = year_arr.index(year)
+        patt_count_array[index] += sum_of_col
         print(patt_count_array)
     
     return patt_count_array
@@ -1019,6 +1045,7 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     'Number of unique participations of regions in projects with firms from the same region': [],
     'Total number of signed contracts by firms': [],
     'Number of signed contracts by universities / research organisations': [],
+    'Budget absorbed by universities / research organisations': [],
 
     }
 
