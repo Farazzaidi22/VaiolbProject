@@ -295,7 +295,15 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code , output_d
     ######### FOR COLUMN Z Number of unique participations of regions in projects with firms and/or universities
     
         output_dict["Number of unique participations of regions in projects with firms and/or universities"] +=  For_Col_Z(year, H2020_df, H2020_df_DED51_pub, code)
+
     
+    ######### FOR COLUMN AA Number of projects of public authorities with background IPR from another region
+    
+        output_dict["Number of projects of public authorities with background IPR from another region"] +=  For_Col_AA_and_AB(year, H2020_df, H2020_df_DED51_pub, IPR_df, 'BACKGROUND', code)
+    
+    ######### FOR COLUMN AB Number of projects of public authorities bringing foreground IPR from another region
+    
+        output_dict["Number of projects of public authorities bringing foreground IPR from another region"] +=  For_Col_AA_and_AB(year, H2020_df, H2020_df_DED51_pub, IPR_df, 'FOREGROUND', code)
     
     
         return output_dict
@@ -711,6 +719,86 @@ def For_Col_Z(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFrame
     return patt_count_array
 
 
+def For_Col_AA_and_AB(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFrame, IPR_df, IPR_Type, code):
+    
+    patt_count_array = [0,0,0,0,0,0,0,0,0]
+    
+    for year in year_arr:
+        print(year)
+
+        H2020_df_filtered_by_Contract_Sig_Date = H2020_df_DED51_pub[ (H2020_df_DED51_pub['Contract signature date'].dt.strftime('%Y') == str(year)) ]
+        print(H2020_df_filtered_by_Contract_Sig_Date)
+        
+        H2020_df_filtered_by_Contract_Sig_Date_unq = H2020_df_filtered_by_Contract_Sig_Date.drop_duplicates(subset='Project ID', keep="first")
+        print(H2020_df_filtered_by_Contract_Sig_Date_unq)
+        
+        for index, row in H2020_df_filtered_by_Contract_Sig_Date_unq.iterrows():
+            
+            project_id = row['Project ID']
+            print(project_id)
+            
+            H2020_df_filtered = H2020_df.loc[H2020_df["Project ID"] == project_id]
+            print(H2020_df_filtered)
+            
+            if not H2020_df_filtered.empty:
+                H2020_df_filtered = H2020_df_filtered[(H2020_df_filtered["Legal Entity Type"] == 'PRC') | (H2020_df_filtered["Legal Entity Type"] == 'HES') | (H2020_df_filtered["Legal Entity Type"] == 'REC')]
+                print(H2020_df_filtered)
+
+                if not H2020_df_filtered.empty:
+                    H2020_df_filtered = H2020_df_filtered[H2020_df_filtered["NUTS 3 Code"] != code]
+                    print(H2020_df_filtered)
+                    
+                    if not H2020_df_filtered.empty:
+                        
+                        IPR_df_Filtered = IPR_df.loc[IPR_df["project ID"] == project_id]
+                        print(IPR_df_Filtered)
+                        
+                        if not IPR_df_Filtered.empty:
+                            IPR_df_Filtered = IPR_df_Filtered.loc[IPR_df_Filtered["IPR"] == IPR_Type]
+                            print(IPR_df_Filtered)
+                        
+                            if not IPR_df_Filtered.empty:
+                                print(IPR_df_Filtered)
+                                
+                                for IPR_df_index, IPR_df_row in IPR_df_Filtered.iterrows():
+
+                                    H2020_Org_Id_Filtered_df = H2020_df.loc[ (H2020_df["Organisation ID"] == IPR_df_row["Organisation ID"]) ]
+                                    
+                                    if not H2020_Org_Id_Filtered_df.empty:
+                                        print(H2020_Org_Id_Filtered_df)
+                                        
+                                        for H2020_Org_Id_Filtered_df_index, row_1 in H2020_Org_Id_Filtered_df.iterrows():
+                                            
+                                            if row_1['NUTS 3 Code'] != code:
+
+                                                H2020_df_filtered_by_Contract_Sig_Date_project_id = H2020_df_filtered_by_Contract_Sig_Date_unq.loc[H2020_df["Project ID"] == project_id]
+                                                print(H2020_df_filtered_by_Contract_Sig_Date_project_id)
+                                                
+                                                count_row = H2020_df_filtered_by_Contract_Sig_Date_project_id.shape[0]
+                                                print(count_row)
+                                                
+                                                index = year_arr.index(year)
+                                                patt_count_array[index] += count_row
+                                                print(patt_count_array)
+                                                break
+                                            else:
+                                                continue
+                                else:
+                                    continue
+                            else:
+                                continue
+                        else:
+                            continue
+                    else:
+                        continue
+                else:
+                    continue
+            else:
+                    continue
+    
+    return patt_count_array
+
+
 
 def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path): #NUTS3_file_path, IPR_file_path, abs_path):
 
@@ -751,6 +839,10 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     
     'Number of signed contracts by public bodies in projects with firms and/or universities': [],
     'Number of unique participations of regions in projects with firms and/or universities': [],
+    
+    'Number of projects of public authorities with background IPR from another region': [],
+    'Number of projects of public authorities bringing foreground IPR from another region': [],
+    
     
     }
 
