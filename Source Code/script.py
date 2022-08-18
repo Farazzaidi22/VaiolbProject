@@ -317,7 +317,18 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code , output_d
     ######### FOR COLUMN AE Total number of signed contracts by firms
     
         output_dict["Total number of signed contracts by firms"] +=  For_Col_AE(year, H2020_df_DED51_prc)
+    
+    ### 1 - Looking for code in column K 'NUTS 3 Code'
+
+        H2020_df_DED51_hes_and_rec = H2020_df.loc[H2020_df['NUTS 3 Code'] == code]
+    
+    ### 2 - Filtering only Public body from column H 'Legal Entity Type'
+
+        H2020_df_DED51_hes_and_rec = H2020_df_DED51_hes_and_rec.loc[(H2020_df_DED51_hes_and_rec["Legal Entity Type"] == 'HES') | (H2020_df_DED51_hes_and_rec["Legal Entity Type"] == 'REC')]
         
+    ######### FOR COLUMN AF Number of signed contracts by universities / research organisations
+    
+        output_dict["Number of signed contracts by universities / research organisations"] +=  For_Col_AF(year, H2020_df_DED51_hes_and_rec)
         
         return output_dict
 
@@ -914,6 +925,7 @@ def For_Col_AD(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFram
     
     return patt_count_array
 
+
 def For_Col_AE(year_arr, H2020_df_DED51_prc: pd.DataFrame):
     
     patt_count_array = [0,0,0,0,0,0,0,0,0]
@@ -934,6 +946,29 @@ def For_Col_AE(year_arr, H2020_df_DED51_prc: pd.DataFrame):
         print(patt_count_array)
     
     return patt_count_array
+
+def For_Col_AF(year_arr, H2020_df_DED51_hes_and_rec: pd.DataFrame):
+    
+    patt_count_array = [0,0,0,0,0,0,0,0,0]
+
+    H2020_df_DED51_hes_and_rec = H2020_df_DED51_hes_and_rec.sort_values('Organisation ID')
+    
+    for year in year_arr:
+        print(year)
+
+        H2020_df_DED51_prc_filtered = H2020_df_DED51_hes_and_rec[ (H2020_df_DED51_hes_and_rec['Contract signature date'].dt.strftime('%Y') == str(year)) ]
+        print(H2020_df_DED51_prc_filtered)
+
+        count_row = H2020_df_DED51_prc_filtered.shape[0]
+        print(count_row)
+
+        index = year_arr.index(year)
+        patt_count_array[index] += count_row
+        print(patt_count_array)
+    
+    return patt_count_array
+
+
 
 def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path): #NUTS3_file_path, IPR_file_path, abs_path):
 
@@ -983,6 +1018,7 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     'Number of projects of public authorities with entrepreneurial bricolage': [],
     'Number of unique participations of regions in projects with firms from the same region': [],
     'Total number of signed contracts by firms': [],
+    'Number of signed contracts by universities / research organisations': [],
 
     }
 
