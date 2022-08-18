@@ -204,7 +204,7 @@ def Clean_IPR_Df_Data(IPR_df: pd.DataFrame, H2020_df: pd.DataFrame, IPR_file_pat
 
 
 
-def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code , output_dict, year, Patent_df):
+def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code , output_dict, year, Patent_df, Brico_df):
 
 # Round 1
 
@@ -305,7 +305,11 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code , output_d
     
         output_dict["Number of projects of public authorities bringing foreground IPR from another region"] +=  For_Col_AA_and_AB(year, H2020_df, H2020_df_DED51_pub, IPR_df, 'FOREGROUND', code)
     
+    ######### FOR COLUMN AC Number of projects of public authorities with entrepreneurial bricolage
     
+        output_dict["Number of projects of public authorities with entrepreneurial bricolage"] +=  For_Col_AC(year, H2020_df, H2020_df_DED51_pub, Brico_df, code)
+        
+        
         return output_dict
 
 
@@ -719,7 +723,7 @@ def For_Col_Z(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFrame
     return patt_count_array
 
 
-def For_Col_AA_and_AB(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFrame, IPR_df, IPR_Type, code):
+def For_Col_AA_and_AB(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFrame, IPR_df: pd.DataFrame, IPR_Type, code):
     
     patt_count_array = [0,0,0,0,0,0,0,0,0]
     
@@ -748,8 +752,7 @@ def For_Col_AA_and_AB(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.D
                     H2020_df_filtered = H2020_df_filtered[H2020_df_filtered["NUTS 3 Code"] != code]
                     print(H2020_df_filtered)
                     
-                    if not H2020_df_filtered.empty:
-                        
+                    if not H2020_df_filtered.empty:                        
                         IPR_df_Filtered = IPR_df.loc[IPR_df["project ID"] == project_id]
                         print(IPR_df_Filtered)
                         
@@ -799,8 +802,57 @@ def For_Col_AA_and_AB(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.D
     return patt_count_array
 
 
+def For_Col_AC(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFrame, Brico_df, code):
+    
+    patt_count_array = [0,0,0,0,0,0,0,0,0]
+    
+    for year in year_arr:
+        print(year)
 
-def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path): #NUTS3_file_path, IPR_file_path, abs_path):
+        H2020_df_filtered_by_Contract_Sig_Date = H2020_df_DED51_pub[ (H2020_df_DED51_pub['Contract signature date'].dt.strftime('%Y') == str(year)) ]
+        print(H2020_df_filtered_by_Contract_Sig_Date)
+        
+        H2020_df_filtered_by_Contract_Sig_Date_unq = H2020_df_filtered_by_Contract_Sig_Date.drop_duplicates(subset='Project ID', keep="first")
+        print(H2020_df_filtered_by_Contract_Sig_Date_unq)
+        
+        for index, row in H2020_df_filtered_by_Contract_Sig_Date_unq.iterrows():
+
+            project_id = row['Project ID']
+            print(project_id)
+            
+            H2020_df_filtered = H2020_df.loc[H2020_df["Project ID"] == project_id]
+            print(H2020_df_filtered)
+            
+            if not H2020_df_filtered.empty:
+                H2020_df_filtered = H2020_df_filtered[(H2020_df_filtered["Legal Entity Type"] == 'PRC') | (H2020_df_filtered["Legal Entity Type"] == 'HES') | (H2020_df_filtered["Legal Entity Type"] == 'REC')]
+                print(H2020_df_filtered)
+
+                if not H2020_df_filtered.empty:
+                    H2020_df_filtered = H2020_df_filtered[H2020_df_filtered["NUTS 3 Code"] != code]
+                    print(H2020_df_filtered)
+
+                    if project_id in Brico_df['Project ID'].values:
+                        H2020_df_filtered_by_Contract_Sig_Date_project_id = H2020_df_filtered_by_Contract_Sig_Date_unq.loc[H2020_df["Project ID"] == project_id]
+                        print(H2020_df_filtered_by_Contract_Sig_Date_project_id)
+                        
+                        count_row = H2020_df_filtered_by_Contract_Sig_Date_project_id.shape[0]
+                        print(count_row)
+                        
+                        index = year_arr.index(year)
+                        patt_count_array[index] += count_row
+                        print(patt_count_array)
+                    else:
+                        continue
+                else:
+                    continue
+            else:
+                continue
+        
+    return patt_count_array
+
+
+
+def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path): #NUTS3_file_path, IPR_file_path, abs_path):
 
 ######### FOR COLUMN K for Total number of public bodies participations, running for at least one year
 
@@ -814,6 +866,9 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     
     # Opening Patents.xlsx
     Patent_df = Create_DF_from_CSV(Patents_file_path)
+    
+    # Opening Brico.xlsx
+    Brico_df = Create_DF(Brico_file_path)
 
 
 ### columns
@@ -842,6 +897,7 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     
     'Number of projects of public authorities with background IPR from another region': [],
     'Number of projects of public authorities bringing foreground IPR from another region': [],
+    'Number of projects of public authorities with entrepreneurial bricolage': [],
     
     
     }
@@ -950,7 +1006,7 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
             output_dict["Year"].append(y)
 
 
-        output_dict = Cals_For_Codes(H2020_df, IPR_df, i, output_dict, years, Patent_df)
+        output_dict = Cals_For_Codes(H2020_df, IPR_df, i, output_dict, years, Patent_df, Brico_df)
 
 
     print(output_dict)
@@ -989,9 +1045,11 @@ NUTS3_file_path = "E:\Freelance/vaiolb\Main\Input_output/NUTS3.xlsx"
 H2020_file_path ="E:\Freelance/vaiolb\Main\Input_output/H2020rev SECOND ROUND.xlsx"
 IPR_file_path = "E:\Freelance/vaiolb\Main\Input_output/IPR(modified).xlsx"
 Patents_file_path = "E:\Freelance/vaiolb\Main\Input_output/PATENTS.csv"
+Brico_file_path = "E:\Freelance/vaiolb\Main\Input_output/07 BRICO.xlsx"
+
 
 
 abs_path = Path(H2020_file_path).parent
 
 
-main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path) 
+main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path) 
