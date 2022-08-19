@@ -346,6 +346,30 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code, output_di
     
         output_dict["Difference to highest Degree Centrality (total patents)"] +=  For_Col_AH_and_AI(year, H2020_df, H2020_df_DED51_pub, Network_total_df, 'Total patents', code)
         
+    ######### FOR COLUMN AJ Degree Centrality (social)
+    
+        output_dict["Degree Centrality (social)"] +=  For_Col_AJ_AK_AL_AM_AN_and_AO(Network_total_df, 'Degree Centrality', 'Total social challenge', code)
+
+    ######### FOR COLUMN AK Betweenness Centrality (social)
+    
+        output_dict["Betweenness Centrality (social)"] +=  For_Col_AJ_AK_AL_AM_AN_and_AO(Network_total_df, 'Betweenness Centrality', 'Total social challenge', code)
+
+    ######### FOR COLUMN AL Closeness Centrality (social)
+    
+        output_dict["Closeness Centrality (social)"] +=  For_Col_AJ_AK_AL_AM_AN_and_AO(Network_total_df, 'Closeness Centrality', 'Total social challenge', code)
+
+    ######### FOR COLUMN AM Degree Centrality (total)
+    
+        output_dict["Degree Centrality (total)"] +=  For_Col_AJ_AK_AL_AM_AN_and_AO(Network_total_df, 'Degree Centrality', 'Total patents', code)
+        
+    ######### FOR COLUMN AN Betweenness Centrality (total)
+    
+        output_dict["Betweenness Centrality (total)"] +=  For_Col_AJ_AK_AL_AM_AN_and_AO(Network_total_df, 'Betweenness Centrality', 'Total patents', code)
+        
+    ######### FOR COLUMN AO Closeness Centrality (total)
+    
+        output_dict["Closeness Centrality (total)"] +=  For_Col_AJ_AK_AL_AM_AN_and_AO(Network_total_df, 'Closeness Centrality', 'Total patents', code)
+        
         return output_dict
 
 
@@ -510,6 +534,11 @@ def For_Col_P_and_Q(year_arr, IPR_df: pd.DataFrame, IPR_Type,  H2020_df: pd.Data
                                         index = year_arr.index(project_start_year)
                                         patt_count_array[index + 1] = patt_count_array[index + 1] + 1
                                         print(patt_count_array[index + 1])
+                                    
+                                    else:
+                                        continue
+                                else:
+                                    continue
 
 
     return patt_count_array
@@ -1087,7 +1116,24 @@ def For_Col_AH_and_AI(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.D
             continue
     
     return patt_count_array
+
+
+def For_Col_AJ_AK_AL_AM_AN_and_AO(Network_total_df: pd.DataFrame, column_name, Field_type, code):
+    
+    patt_count_array = [0,0,0,0,0,0,0,0,0]
+    
+    Network_total_df_Filtered = Network_total_df.loc[Network_total_df['NUTS 3 Code'] == code]
+    Network_total_df_Filtered = Network_total_df_Filtered.loc[Network_total_df_Filtered['Field'] == Field_type]
+    
+    i = 0
+    for Network_total_df_Filtered_index, Network_total_df_Filtered_row in Network_total_df_Filtered.iterrows():
         
+        val = Network_total_df_Filtered_row[column_name]
+        patt_count_array[i] = val
+        i = i + 1
+
+    print(patt_count_array)
+    return patt_count_array
 
 
 def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path, Network_total_file_path): #NUTS3_file_path, IPR_file_path, abs_path):
@@ -1145,6 +1191,13 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     'Budget absorbed by universities / research organisations': [],
     'Difference to highest Degree Centrality (social challenge patents)': [],
     'Difference to highest Degree Centrality (total patents)' : [],
+    
+    'Degree Centrality (social)': [],
+    'Betweenness Centrality (social)': [],
+    'Closeness Centrality (social)': [],
+    'Degree Centrality (total)': [],
+    'Betweenness Centrality (total)': [],
+    'Closeness Centrality (total)': [],    
 
     }
 
