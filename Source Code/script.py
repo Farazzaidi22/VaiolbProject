@@ -13,6 +13,7 @@ import pandas as pd
 import numpy as np
 import datetime
 from dateutil import relativedelta
+import re
 
 
 def Create_DF(file_path):
@@ -201,10 +202,13 @@ def Clean_IPR_Df_Data(IPR_df: pd.DataFrame, H2020_df: pd.DataFrame, IPR_file_pat
     
     return IPR_df
 
+def Create_List_Of_Unique_Values(df: pd.DataFrame):
+    
+    myList = df.unique().tolist()
+    return myList
 
 
-
-def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code , output_dict, year, Patent_df, Brico_df):
+def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code, output_dict, year, Patent_df, Brico_df, Network_total_df):
 
 # Round 1
 
@@ -333,6 +337,10 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code , output_d
     ######### FOR COLUMN AG Budget absorbed by universities / research organisations
     
         output_dict["Budget absorbed by universities / research organisations"] +=  For_Col_AG(year, H2020_df_DED51_hes_and_rec)
+
+    ######### FOR COLUMN AH Difference to highest Degree Centrality (social challenge patents)
+    
+        output_dict["Difference to highest Degree Centrality (social challenge patents)"] +=  For_Col_AH(year, H2020_df, H2020_df_DED51_pub, Network_total_df, code)
         
         return output_dict
 
@@ -973,6 +981,7 @@ def For_Col_AF(year_arr, H2020_df_DED51_hes_and_rec: pd.DataFrame):
     
     return patt_count_array
 
+
 def For_Col_AG(year_arr, H2020_df_DED51_hes_and_rec: pd.DataFrame):
     
     patt_count_array = [0,0,0,0,0,0,0,0,0]
@@ -995,8 +1004,90 @@ def For_Col_AG(year_arr, H2020_df_DED51_hes_and_rec: pd.DataFrame):
     return patt_count_array
 
 
+def For_Col_AH(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFrame, Network_total_df: pd.DataFrame, code):
+    
+    patt_count_array = [0,0,0,0,0,0,0,0,0]
+    
+    for year in year_arr:
+        print(year)
 
-def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path): #NUTS3_file_path, IPR_file_path, abs_path):
+        H2020_df_filtered_by_Contract_Sig_Date = H2020_df_DED51_pub[ (H2020_df_DED51_pub['Contract signature date'].dt.strftime('%Y') == str(year)) ]
+        
+        H2020_df_filtered_by_Contract_Sig_Date_unq = H2020_df_filtered_by_Contract_Sig_Date.drop_duplicates(subset='Project ID', keep="first")
+        print(H2020_df_filtered_by_Contract_Sig_Date_unq)
+        
+        H2020_uniq_proj_id_list = Create_List_Of_Unique_Values(H2020_df_filtered_by_Contract_Sig_Date_unq['Project ID'])
+        print(H2020_uniq_proj_id_list)
+
+        H2020_df_filtered = H2020_df[H2020_df["Project ID"].isin(H2020_uniq_proj_id_list)]
+        
+        if not H2020_df_filtered.empty:
+            H2020_df_filtered = H2020_df_filtered[H2020_df_filtered["NUTS 3 Code"] != code]
+            
+            if not H2020_df_filtered.empty:
+                H2020_df_filtered = H2020_df_filtered[(H2020_df_filtered["Legal Entity Type"] == 'PRC') | (H2020_df_filtered["Legal Entity Type"] == 'HES') | (H2020_df_filtered["Legal Entity Type"] == 'REC')]
+                print(H2020_df_filtered)
+                
+                if not H2020_df_filtered.empty:
+                    print(H2020_df_filtered)
+                    
+                    H2020_uniq_nuts3_code_list = Create_List_Of_Unique_Values(H2020_df_filtered['NUTS 3 Code'])
+                    print(H2020_uniq_nuts3_code_list)
+                    
+                    rex = re.compile('[^A-Za-z0-9]+')
+                    H2020_uniq_nuts3_code_list_filtered = [x for x in H2020_uniq_nuts3_code_list if not rex.match(x)]
+                    print(H2020_uniq_nuts3_code_list_filtered)
+                    
+
+                    Network_total_df_filtered = Network_total_df[Network_total_df["NUTS 3 Code"].isin(H2020_uniq_nuts3_code_list_filtered)]
+                    
+                    if not Network_total_df_filtered.empty:
+                        Network_total_df_filtered = Network_total_df_filtered[ ( Network_total_df_filtered["Field"] == 'Total social challenge') ]
+                        
+                        if not Network_total_df_filtered.empty:
+                            Network_total_df_filtered = Network_total_df_filtered[ Network_total_df_filtered['Year'] == year ]
+                            print(Network_total_df_filtered)
+                            
+                            if not Network_total_df_filtered.empty:
+                                
+                                max_val_from_filtered_network_df = Network_total_df_filtered['Degree Centrality'].max()
+                                print(max_val_from_filtered_network_df)
+                                
+                                Network_total_df_code_based = Network_total_df[ ( Network_total_df["NUTS 3 Code"] == code) ]
+                                
+                                Network_total_df_code_based = Network_total_df_code_based[ ( Network_total_df_code_based["Field"] == 'Total social challenge') ]
+                                
+                                Network_total_df_code_based = Network_total_df_code_based[ (Network_total_df_code_based['Year'] == year) ]
+                                print(Network_total_df_code_based)
+                                
+                                max_val_from_code_network_df = Network_total_df_code_based['Degree Centrality'].max()
+                                print(max_val_from_code_network_df)
+                                
+                                sub_value = max_val_from_filtered_network_df - max_val_from_code_network_df
+                                print(sub_value)
+                                
+                                index = year_arr.index(year)
+                                patt_count_array[index] = sub_value
+                                print(patt_count_array)
+                            
+                            else:
+                                continue
+                        else:
+                            continue
+                    else:
+                        continue
+            else:
+                continue
+        
+        else:
+            continue
+    
+    return patt_count_array
+        
+
+        
+
+def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path, Network_total_file_path): #NUTS3_file_path, IPR_file_path, abs_path):
 
 ######### FOR COLUMN K for Total number of public bodies participations, running for at least one year
 
@@ -1013,6 +1104,9 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     
     # Opening Brico.xlsx
     Brico_df = Create_DF(Brico_file_path)
+    
+    # Opening Network_total.xlsx
+    Network_total_df = Create_DF(Network_total_file_path)
 
 
 ### columns
@@ -1046,6 +1140,7 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     'Total number of signed contracts by firms': [],
     'Number of signed contracts by universities / research organisations': [],
     'Budget absorbed by universities / research organisations': [],
+    'Difference to highest Degree Centrality (social challenge patents)': [],
 
     }
 
@@ -1153,7 +1248,7 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
             output_dict["Year"].append(y)
 
 
-        output_dict = Cals_For_Codes(H2020_df, IPR_df, i, output_dict, years, Patent_df, Brico_df)
+        output_dict = Cals_For_Codes(H2020_df, IPR_df, i, output_dict, years, Patent_df, Brico_df, Network_total_df)
 
 
     print(output_dict)
@@ -1193,10 +1288,10 @@ H2020_file_path ="E:\Freelance/vaiolb\Main\Input_output/H2020rev SECOND ROUND.xl
 IPR_file_path = "E:\Freelance/vaiolb\Main\Input_output/IPR(modified).xlsx"
 Patents_file_path = "E:\Freelance/vaiolb\Main\Input_output/PATENTS.csv"
 Brico_file_path = "E:\Freelance/vaiolb\Main\Input_output/07 BRICO.xlsx"
-
+Network_total_file_path = "E:\Freelance/vaiolb\Main\Input_output/06 NETWORK TOTALS.xlsx"
 
 
 abs_path = Path(H2020_file_path).parent
 
 
-main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path) 
+main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path, Network_total_file_path) 
