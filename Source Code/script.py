@@ -340,7 +340,11 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code, output_di
 
     ######### FOR COLUMN AH Difference to highest Degree Centrality (social challenge patents)
     
-        output_dict["Difference to highest Degree Centrality (social challenge patents)"] +=  For_Col_AH(year, H2020_df, H2020_df_DED51_pub, Network_total_df, code)
+        output_dict["Difference to highest Degree Centrality (social challenge patents)"] +=  For_Col_AH_and_AI(year, H2020_df, H2020_df_DED51_pub, Network_total_df, 'Total social challenge', code)
+        
+    ######### FOR COLUMN AI Difference to highest Degree Centrality (total patents)
+    
+        output_dict["Difference to highest Degree Centrality (total patents)"] +=  For_Col_AH_and_AI(year, H2020_df, H2020_df_DED51_pub, Network_total_df, 'Total patents', code)
         
         return output_dict
 
@@ -1004,7 +1008,7 @@ def For_Col_AG(year_arr, H2020_df_DED51_hes_and_rec: pd.DataFrame):
     return patt_count_array
 
 
-def For_Col_AH(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFrame, Network_total_df: pd.DataFrame, code):
+def For_Col_AH_and_AI(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFrame, Network_total_df: pd.DataFrame, Field_type, code):
     
     patt_count_array = [0,0,0,0,0,0,0,0,0]
     
@@ -1042,7 +1046,7 @@ def For_Col_AH(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFram
                     Network_total_df_filtered = Network_total_df[Network_total_df["NUTS 3 Code"].isin(H2020_uniq_nuts3_code_list_filtered)]
                     
                     if not Network_total_df_filtered.empty:
-                        Network_total_df_filtered = Network_total_df_filtered[ ( Network_total_df_filtered["Field"] == 'Total social challenge') ]
+                        Network_total_df_filtered = Network_total_df_filtered[ ( Network_total_df_filtered["Field"] == Field_type) ]
                         
                         if not Network_total_df_filtered.empty:
                             Network_total_df_filtered = Network_total_df_filtered[ Network_total_df_filtered['Year'] == year ]
@@ -1055,7 +1059,7 @@ def For_Col_AH(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFram
                                 
                                 Network_total_df_code_based = Network_total_df[ ( Network_total_df["NUTS 3 Code"] == code) ]
                                 
-                                Network_total_df_code_based = Network_total_df_code_based[ ( Network_total_df_code_based["Field"] == 'Total social challenge') ]
+                                Network_total_df_code_based = Network_total_df_code_based[ ( Network_total_df_code_based["Field"] == Field_type) ]
                                 
                                 Network_total_df_code_based = Network_total_df_code_based[ (Network_total_df_code_based['Year'] == year) ]
                                 print(Network_total_df_code_based)
@@ -1085,7 +1089,6 @@ def For_Col_AH(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFram
     return patt_count_array
         
 
-        
 
 def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path, Network_total_file_path): #NUTS3_file_path, IPR_file_path, abs_path):
 
@@ -1141,6 +1144,7 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     'Number of signed contracts by universities / research organisations': [],
     'Budget absorbed by universities / research organisations': [],
     'Difference to highest Degree Centrality (social challenge patents)': [],
+    'Difference to highest Degree Centrality (total patents)' : [],
 
     }
 
@@ -1179,7 +1183,9 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
 
     # nut3_code_list = NUTS3_df.get('All regions')['Code 2021'].unique()
 
-    nut3_code_list = ['DED51', 'ES300', 'ES705']
+    # nut3_code_list = ['DED51', 'ES300', 'ES705']
+    nut3_code_list = ['DED51']
+
     # print(nut3_code_list)
 
     df_ALL_REG = NUTS3_df.get('All regions')
