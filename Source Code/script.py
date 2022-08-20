@@ -269,9 +269,9 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code, output_di
 
         output_dict["Total number of Foreground PR (of firms)"] +=  For_Col_R_and_S(year, IPR_df, 'FOREGROUND', H2020_df, H2020_df_DED51_prc, code)
 
-    ######### FOR COLUMN T Total number of signed contracts by firms
+    ######### FOR COLUMN T Total number of signed contracts by unique firms
 
-        output_dict["Total number of signed contracts by firms"] +=  For_Col_T(year, H2020_df_DED51_prc)
+        output_dict["Total number of signed contracts by unique firms"] +=  For_Col_T(year, H2020_df_DED51_prc)
 
     ######### FOR COLUMN U Total co-financing of firms (aggregated per region/year)
 
@@ -372,59 +372,59 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code, output_di
     
     ######### FOR COLUMN AP SINGLE Health
     
-        output_dict["SINGLE Health"] +=  For_Col_AP_AQ_AR_AS_AT_AU_AV_AW_AX_AY_AZ_BA_BB_and_AC(Patents_Social_df, 'SINGLE Health', code)
+        output_dict["SINGLE Health"] +=  For_Col_AP_to_BC(Patents_Social_df, 'SINGLE Health', code)
         
     ######### FOR COLUMN AQ SINGLE Bioeconomy
     
-        output_dict["SINGLE Bioeconomy"] +=  For_Col_AP_AQ_AR_AS_AT_AU_AV_AW_AX_AY_AZ_BA_BB_and_AC(Patents_Social_df, 'SINGLE Bioeconomy', code)
+        output_dict["SINGLE Bioeconomy"] +=  For_Col_AP_to_BC(Patents_Social_df, 'SINGLE Bioeconomy', code)
         
     ######### FOR COLUMN AR SINGLE Energy
     
-        output_dict["SINGLE Energy"] +=  For_Col_AP_AQ_AR_AS_AT_AU_AV_AW_AX_AY_AZ_BA_BB_and_AC(Patents_Social_df, 'SINGLE Energy', code)
+        output_dict["SINGLE Energy"] +=  For_Col_AP_to_BC(Patents_Social_df, 'SINGLE Energy', code)
         
     ######### FOR COLUMN AS SINGLE Transport
     
-        output_dict["SINGLE Transport"] +=  For_Col_AP_AQ_AR_AS_AT_AU_AV_AW_AX_AY_AZ_BA_BB_and_AC(Patents_Social_df, 'SINGLE Transport', code)
+        output_dict["SINGLE Transport"] +=  For_Col_AP_to_BC(Patents_Social_df, 'SINGLE Transport', code)
         
     ######### FOR COLUMN AT SINGLE Climate
     
-        output_dict["SINGLE Climate"] +=  For_Col_AP_AQ_AR_AS_AT_AU_AV_AW_AX_AY_AZ_BA_BB_and_AC(Patents_Social_df, 'SINGLE Climate', code)
+        output_dict["SINGLE Climate"] +=  For_Col_AP_to_BC(Patents_Social_df, 'SINGLE Climate', code)
         
     ######### FOR COLUMN AU SINGLE Security
     
-        output_dict["SINGLE Security"] +=  For_Col_AP_AQ_AR_AS_AT_AU_AV_AW_AX_AY_AZ_BA_BB_and_AC(Patents_Social_df, 'SINGLE Security', code)
+        output_dict["SINGLE Security"] +=  For_Col_AP_to_BC(Patents_Social_df, 'SINGLE Security', code)
         
     ######### FOR COLUMN AV SINGLE TOTAL
     
-        output_dict["SINGLE TOTAL"] +=  For_Col_AP_AQ_AR_AS_AT_AU_AV_AW_AX_AY_AZ_BA_BB_and_AC(Patents_Social_df, 'SINGLE TOTAL', code)
+        output_dict["SINGLE TOTAL"] +=  For_Col_AP_to_BC(Patents_Social_df, 'SINGLE TOTAL', code)
         
     ######### FOR COLUMN AW JOINT Health
     
-        output_dict["JOINT Health"] +=  For_Col_AP_AQ_AR_AS_AT_AU_AV_AW_AX_AY_AZ_BA_BB_and_AC(Patents_Social_df, 'JOINT Health', code)
+        output_dict["JOINT Health"] +=  For_Col_AP_to_BC(Patents_Social_df, 'JOINT Health', code)
         
     ######### FOR COLUMN AX JOINT Bioeconomy
     
-        output_dict["JOINT Bioeconomy"] +=  For_Col_AP_AQ_AR_AS_AT_AU_AV_AW_AX_AY_AZ_BA_BB_and_AC(Patents_Social_df, 'JOINT Bioeconomy', code)
+        output_dict["JOINT Bioeconomy"] +=  For_Col_AP_to_BC(Patents_Social_df, 'JOINT Bioeconomy', code)
         
     ######### FOR COLUMN AY JOINT Energy
     
-        output_dict["JOINT Energy"] +=  For_Col_AP_AQ_AR_AS_AT_AU_AV_AW_AX_AY_AZ_BA_BB_and_AC(Patents_Social_df, 'JOINT Energy', code)
+        output_dict["JOINT Energy"] +=  For_Col_AP_to_BC(Patents_Social_df, 'JOINT Energy', code)
         
     ######### FOR COLUMN AZ JOINT Transport
     
-        output_dict["JOINT Transport"] +=  For_Col_AP_AQ_AR_AS_AT_AU_AV_AW_AX_AY_AZ_BA_BB_and_AC(Patents_Social_df, 'JOINT Transport', code)
+        output_dict["JOINT Transport"] +=  For_Col_AP_to_BC(Patents_Social_df, 'JOINT Transport', code)
         
     ######### FOR COLUMN BA JOINT Climate
     
-        output_dict["JOINT Climate"] +=  For_Col_AP_AQ_AR_AS_AT_AU_AV_AW_AX_AY_AZ_BA_BB_and_AC(Patents_Social_df, 'JOINT Climate', code)
+        output_dict["JOINT Climate"] +=  For_Col_AP_to_BC(Patents_Social_df, 'JOINT Climate', code)
         
     ######### FOR COLUMN BB JOINT Security
     
-        output_dict["JOINT Security"] +=  For_Col_AP_AQ_AR_AS_AT_AU_AV_AW_AX_AY_AZ_BA_BB_and_AC(Patents_Social_df, 'JOINT Security', code)
+        output_dict["JOINT Security"] +=  For_Col_AP_to_BC(Patents_Social_df, 'JOINT Security', code)
         
     ######### FOR COLUMN BC TOTAL JOINT
     
-        output_dict["TOTAL JOINT"] +=  For_Col_AP_AQ_AR_AS_AT_AU_AV_AW_AX_AY_AZ_BA_BB_and_AC(Patents_Social_df, 'TOTAL JOINT', code)
+        output_dict["TOTAL JOINT"] +=  For_Col_AP_to_BC(Patents_Social_df, 'TOTAL JOINT', code)
         
         
         return output_dict
@@ -1192,7 +1192,7 @@ def For_Col_AJ_AK_AL_AM_AN_and_AO(Network_total_df: pd.DataFrame, column_name, F
     print(patt_count_array)
     return patt_count_array
 
-def For_Col_AP_AQ_AR_AS_AT_AU_AV_AW_AX_AY_AZ_BA_BB_and_AC(Patents_Social_df: pd.DataFrame, column_name, code):
+def For_Col_AP_to_BC(Patents_Social_df: pd.DataFrame, column_name, code):
     
     patt_count_array = [0,0,0,0,0,0,0,0,0]
     
@@ -1249,7 +1249,7 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     
     'Total number of background IPR': [],
     'Total number of Foreground PR (of firms)': [],
-    'Total number of signed contracts by firms': [],
+    'Total number of signed contracts by unique firms': [],
     'Total co-financing of firms (aggregated per region/year)': [],
     'Total number of patents (single applicant in that region)': [],
     'Total number of patents': [],
@@ -1325,9 +1325,9 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     
     print("Loaded!!!!")
 
-    # nut3_code_list = NUTS3_df.get('All regions')['Code 2021'].unique()
+    nut3_code_list = NUTS3_df.get('All regions')['Code 2021'].unique()
 
-    nut3_code_list = ['DED51', 'ES300', 'ES705']
+    # nut3_code_list = ['DED51', 'ES300', 'ES705']
     # nut3_code_list = ['DED51']
 
     # print(nut3_code_list)
@@ -1405,6 +1405,9 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
 
 
     main_df = pd.DataFrame()
+    
+    for key in output_dict:
+        print(key, ": ", " len: ", len(output_dict[key]))
 
     print('Optimizing file....')
     outputdf = pd.DataFrame(data=output_dict)
@@ -1424,26 +1427,26 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     print('Finished!!!!')
 
 
-# def Start_Editing(NUTS3_file_path, H2020_file_path, IPR_file_path, Patents_file_path):
+def Start_Editing(NUTS3_file_path, H2020_file_path, IPR_file_path, Patents_file_path, Brico_file_path, Network_total_file_path, Patents_Social_file_path):
     
-#     print('Started!!!!!')
-#     abs_path = Path(H2020_file_path).parent
-#     main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path)
+    print('Started!!!!!')
+    abs_path = Path(H2020_file_path).parent
+    main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path, Network_total_file_path, Patents_Social_file_path)
 
 
 
 
-NUTS3_file_path = "E:\Freelance/vaiolb\Main\Input_output/NUTS3.xlsx"
-H2020_file_path ="E:\Freelance/vaiolb\Main\Input_output/H2020rev SECOND ROUND.xlsx"
-IPR_file_path = "E:\Freelance/vaiolb\Main\Input_output/IPR(modified).xlsx"
-Patents_file_path = "E:\Freelance/vaiolb\Main\Input_output/PATENTS.csv"
-Brico_file_path = "E:\Freelance/vaiolb\Main\Input_output/07 BRICO.xlsx"
-Network_total_file_path = "E:\Freelance/vaiolb\Main\Input_output/06 NETWORK TOTALS.xlsx"
-Patents_Social_file_path = "E:\Freelance/vaiolb\Main\Input_output/05 PATENTS SOCIAL.xlsx"
+# NUTS3_file_path = "E:\Freelance/vaiolb\Main\Input_output/NUTS3.xlsx"
+# H2020_file_path ="E:\Freelance/vaiolb\Main\Input_output/H2020rev SECOND ROUND.xlsx"
+# IPR_file_path = "E:\Freelance/vaiolb\Main\Input_output/IPR(modified).xlsx"
+# Patents_file_path = "E:\Freelance/vaiolb\Main\Input_output/PATENTS.csv"
+# Brico_file_path = "E:\Freelance/vaiolb\Main\Input_output/07 BRICO.xlsx"
+# Network_total_file_path = "E:\Freelance/vaiolb\Main\Input_output/06 NETWORK TOTALS.xlsx"
+# Patents_Social_file_path = "E:\Freelance/vaiolb\Main\Input_output/05 PATENTS SOCIAL.xlsx"
 
 
 
-abs_path = Path(H2020_file_path).parent
+# abs_path = Path(H2020_file_path).parent
 
 
-main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path, Network_total_file_path, Patents_Social_file_path) 
+# main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path, Network_total_file_path, Patents_Social_file_path) 
