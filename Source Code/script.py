@@ -1,14 +1,5 @@
-from asyncio.windows_events import NULL
-from calendar import month
-from cmath import nan
-from itertools import count
-import os
 from pathlib import Path
-from importlib.resources import path
 from re import S
-from tokenize import String
-from turtle import st
-from weakref import ref
 import pandas as pd
 import numpy as np
 import datetime
@@ -1306,9 +1297,9 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     
     print("Loaded!!!!")
 
-    # nut3_code_list = NUTS3_df.get('All regions')['Code 2021'].unique()
+    nut3_code_list = NUTS3_df.get('All regions')['Code 2021'].unique()
 
-    nut3_code_list = ['DED51', 'ES300', 'ES705', 'FRK24']
+    # nut3_code_list = ['DED51', 'ES300', 'ES705', 'FRK24']
     # nut3_code_list = ['FRK24']
 
     # print(nut3_code_list)
@@ -1417,17 +1408,17 @@ def Start_Editing(NUTS3_file_path, H2020_file_path, IPR_file_path, Patents_file_
 
 
 
-NUTS3_file_path = "E:\Freelance/vaiolb\Main\Input_output/NUTS3.xlsx"
-H2020_file_path ="E:\Freelance/vaiolb\Main\Input_output/H2020rev SECOND ROUND.xlsx"
-IPR_file_path = "E:\Freelance/vaiolb\Main\Input_output/IPR(modified).xlsx"
-Patents_file_path = "E:\Freelance/vaiolb\Main\Input_output/PATENTS.csv"
-Brico_file_path = "E:\Freelance/vaiolb\Main\Input_output/07 BRICO.xlsx"
-Network_total_file_path = "E:\Freelance/vaiolb\Main\Input_output/06 NETWORK TOTALS.xlsx"
-Patents_Social_file_path = "E:\Freelance/vaiolb\Main\Input_output/05 PATENTS SOCIAL.xlsx"
+# NUTS3_file_path = "E:\Freelance/vaiolb\Main\Input_output/NUTS3.xlsx"
+# H2020_file_path ="E:\Freelance/vaiolb\Main\Input_output/H2020rev SECOND ROUND.xlsx"
+# IPR_file_path = "E:\Freelance/vaiolb\Main\Input_output/IPR(modified).xlsx"
+# Patents_file_path = "E:\Freelance/vaiolb\Main\Input_output/PATENTS.csv"
+# Brico_file_path = "E:\Freelance/vaiolb\Main\Input_output/07 BRICO.xlsx"
+# Network_total_file_path = "E:\Freelance/vaiolb\Main\Input_output/06 NETWORK TOTALS.xlsx"
+# Patents_Social_file_path = "E:\Freelance/vaiolb\Main\Input_output/05 PATENTS SOCIAL.xlsx"
 
 
 
-abs_path = Path(H2020_file_path).parent
+# abs_path = Path(H2020_file_path).parent
 
 
-main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path, Network_total_file_path, Patents_Social_file_path) 
+# main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path, Network_total_file_path, Patents_Social_file_path) 
