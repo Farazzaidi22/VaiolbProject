@@ -885,31 +885,12 @@ def For_Col_AA_and_AB(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.D
                             if not IPR_df_Filtered.empty:
                                 print(IPR_df_Filtered)
                                 
-                                for IPR_df_index, IPR_df_row in IPR_df_Filtered.iterrows():
-
-                                    H2020_Org_Id_Filtered_df = H2020_df.loc[ (H2020_df["Organisation ID"] == IPR_df_row["Organisation ID"]) ]
-                                    
-                                    if not H2020_Org_Id_Filtered_df.empty:
-                                        print(H2020_Org_Id_Filtered_df)
-                                        
-                                        for H2020_Org_Id_Filtered_df_index, row_1 in H2020_Org_Id_Filtered_df.iterrows():
-                                            
-                                            if row_1['NUTS 3 Code'] != code:
-
-                                                H2020_df_filtered_by_Contract_Sig_Date_project_id = H2020_df_filtered_by_Contract_Sig_Date_unq.loc[H2020_df["Project ID"] == project_id]
-                                                print(H2020_df_filtered_by_Contract_Sig_Date_project_id)
-                                                
-                                                count_row = H2020_df_filtered_by_Contract_Sig_Date_project_id.shape[0]
-                                                print(count_row)
-                                                
-                                                index = year_arr.index(year)
-                                                patt_count_array[index] += count_row
-                                                print(patt_count_array)
-                                                break
-                                            else:
-                                                continue
-                                else:
-                                    continue
+                                count_row = 1
+                                print(count_row)
+                                
+                                index = year_arr.index(year)
+                                patt_count_array[index] += count_row
+                                print(patt_count_array)
                             else:
                                 continue
                         else:
@@ -1325,10 +1306,10 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     
     print("Loaded!!!!")
 
-    nut3_code_list = NUTS3_df.get('All regions')['Code 2021'].unique()
+    # nut3_code_list = NUTS3_df.get('All regions')['Code 2021'].unique()
 
-    # nut3_code_list = ['DED51', 'ES300', 'ES705']
-    # nut3_code_list = ['DED51']
+    nut3_code_list = ['DED51', 'ES300', 'ES705', 'FRK24']
+    # nut3_code_list = ['FRK24']
 
     # print(nut3_code_list)
 
@@ -1436,17 +1417,17 @@ def Start_Editing(NUTS3_file_path, H2020_file_path, IPR_file_path, Patents_file_
 
 
 
-# NUTS3_file_path = "E:\Freelance/vaiolb\Main\Input_output/NUTS3.xlsx"
-# H2020_file_path ="E:\Freelance/vaiolb\Main\Input_output/H2020rev SECOND ROUND.xlsx"
-# IPR_file_path = "E:\Freelance/vaiolb\Main\Input_output/IPR(modified).xlsx"
-# Patents_file_path = "E:\Freelance/vaiolb\Main\Input_output/PATENTS.csv"
-# Brico_file_path = "E:\Freelance/vaiolb\Main\Input_output/07 BRICO.xlsx"
-# Network_total_file_path = "E:\Freelance/vaiolb\Main\Input_output/06 NETWORK TOTALS.xlsx"
-# Patents_Social_file_path = "E:\Freelance/vaiolb\Main\Input_output/05 PATENTS SOCIAL.xlsx"
+NUTS3_file_path = "E:\Freelance/vaiolb\Main\Input_output/NUTS3.xlsx"
+H2020_file_path ="E:\Freelance/vaiolb\Main\Input_output/H2020rev SECOND ROUND.xlsx"
+IPR_file_path = "E:\Freelance/vaiolb\Main\Input_output/IPR(modified).xlsx"
+Patents_file_path = "E:\Freelance/vaiolb\Main\Input_output/PATENTS.csv"
+Brico_file_path = "E:\Freelance/vaiolb\Main\Input_output/07 BRICO.xlsx"
+Network_total_file_path = "E:\Freelance/vaiolb\Main\Input_output/06 NETWORK TOTALS.xlsx"
+Patents_Social_file_path = "E:\Freelance/vaiolb\Main\Input_output/05 PATENTS SOCIAL.xlsx"
 
 
 
-# abs_path = Path(H2020_file_path).parent
+abs_path = Path(H2020_file_path).parent
 
 
-# main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path, Network_total_file_path, Patents_Social_file_path) 
+main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path, Brico_file_path, Network_total_file_path, Patents_Social_file_path) 
