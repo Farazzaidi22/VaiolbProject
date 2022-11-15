@@ -447,15 +447,28 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code, output_di
 
 #     ######### FOR COLUMN BD Total co-financing of firms (aggregated per region/year)
 
-    output_dict["Total EU contribution for firms (aggregated per region/year)"] += For_Col_BD(year, H2020_df_DED51_prc)
-    
+    output_dict["Total EU contribution for firms (aggregated per region/year)"] += For_Col_BD(
+        year, H2020_df_DED51_prc)
+
 #     ######### FOR COLUMN BE Total budget of firms (aggregated per region/year)
 
-    output_dict["Total budget of firms (aggregated per region/year)"] += For_Col_BE(year, H2020_df_DED51_prc)
+    output_dict["Total budget of firms (aggregated per region/year)"] += For_Col_BE(
+        year, H2020_df_DED51_prc)
 
 #     ######### FOR COLUMN BF Number of projects with firms exits
 
-    output_dict["Number of projects with firms exits"] += For_Col_BF(year, H2020_df_DED51_pub)
+    output_dict["Number of projects with firms exits"] += For_Col_BF(
+        year, H2020_df_DED51_pub)
+
+#     ######### FOR COLUMN BG Difference to highest Degree Centrality (social challenge patents)
+
+    output_dict["Difference to highest Degree Centrality (social challenge patents)"] += For_Col_BG_and_BH(
+        year, H2020_df, H2020_df_DED51_pub, Network_total_df, 'Total social challenge', code)
+
+#     ######### FOR COLUMN BH Difference to highest Degree Centrality (total patents)
+
+    output_dict["Difference to highest Degree Centrality (total patents)"] += For_Col_BG_and_BH(
+        year, H2020_df, H2020_df_DED51_pub, Network_total_df, 'Total patents', code)
 
     return output_dict
 
@@ -1331,27 +1344,118 @@ def For_Col_BE(year_arr, H2020_df_DED51_prc: pd.DataFrame):
 
     return h2020_total_cost_count
 
+
 def For_Col_BF(year_arr, H2020_df_DED51_pub: pd.DataFrame):
-    
-    H2020_df_filtered_by_Project_ID_unq = H2020_df_DED51_pub.drop_duplicates(subset='Project ID', keep="first")
-    
-    print(H2020_df_filtered_by_Project_ID_unq)
-    
+
     h2020_exit_count = []
     for year in year_arr:
         print("For ", year)
 
-        df1 = H2020_df_filtered_by_Project_ID_unq[(
-            H2020_df_filtered_by_Project_ID_unq['Contract signature date'].dt.strftime('%Y') == str(year))]
+        df1 = H2020_df_DED51_pub[(
+            H2020_df_DED51_pub['Contract signature date'].dt.strftime('%Y') == str(year))]
         print(df1)
-        
+
+        H2020_df_filtered_by_Project_ID_unq = df1.drop_duplicates(
+            subset='Project ID', keep="first")
+
+        print(H2020_df_filtered_by_Project_ID_unq)
+
         exit_count = (df1['Exit (1=exit)'] == 1).sum()
         print(exit_count)
-        
+
         h2020_exit_count.append(exit_count)
 
     print(h2020_exit_count)
     return h2020_exit_count
+
+
+def For_Col_BG_and_BH(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFrame, Network_total_df: pd.DataFrame, Field_type, code):
+
+    patt_count_array = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+    for year in year_arr:
+        print(year)
+
+        H2020_df_filtered_by_Contract_Sig_Date = H2020_df_DED51_pub[(
+            H2020_df_DED51_pub['Contract signature date'].dt.strftime('%Y') == str(year))]
+
+        H2020_df_filtered_by_Contract_Sig_Date_unq = H2020_df_filtered_by_Contract_Sig_Date.drop_duplicates(
+            subset='Project ID', keep="first")
+        print(H2020_df_filtered_by_Contract_Sig_Date_unq)
+
+        H2020_uniq_proj_id_list = Create_List_Of_Unique_Values(
+            H2020_df_filtered_by_Contract_Sig_Date_unq['Project ID'])
+        print(H2020_uniq_proj_id_list)
+
+        H2020_df_filtered = H2020_df[H2020_df["Project ID"].isin(
+            H2020_uniq_proj_id_list)]
+
+        if not H2020_df_filtered.empty:
+            H2020_df_filtered = H2020_df_filtered[H2020_df_filtered["NUTS 3 Code"] != code]
+
+            if not H2020_df_filtered.empty:
+                H2020_df_filtered = H2020_df_filtered[(H2020_df_filtered["Legal Entity Type"] == 'PRC') | (
+                    H2020_df_filtered["Legal Entity Type"] == 'HES') | (H2020_df_filtered["Legal Entity Type"] == 'REC')]
+                print(H2020_df_filtered)
+
+                if not H2020_df_filtered.empty:
+                    print(H2020_df_filtered)
+
+                    H2020_uniq_nuts3_code_list = Create_List_Of_Unique_Values(
+                        H2020_df_filtered['NUTS 3 Code'])
+                    print(H2020_uniq_nuts3_code_list)
+
+                    rex = re.compile('[^A-Za-z0-9]+')
+                    H2020_uniq_nuts3_code_list_filtered = [
+                        x for x in H2020_uniq_nuts3_code_list if not rex.match(x)]
+                    print(H2020_uniq_nuts3_code_list_filtered)
+
+                    Network_total_df_filtered = Network_total_df[Network_total_df["NUTS 3 Code"].isin(
+                        H2020_uniq_nuts3_code_list_filtered)]
+
+                    if not Network_total_df_filtered.empty:
+                        Network_total_df_filtered = Network_total_df_filtered[
+                            Network_total_df_filtered['Year'] == year]
+                        print(Network_total_df_filtered)
+
+                        if not Network_total_df_filtered.empty:
+                            avg_val_from_filtered_network_df = Network_total_df_filtered['Degree Centrality'].mean(
+                            )
+                            print(avg_val_from_filtered_network_df)
+
+                            Network_total_df_code_based = Network_total_df[(
+                                Network_total_df["NUTS 3 Code"] == code)]
+
+                            Network_total_df_code_based = Network_total_df_code_based[(
+                                Network_total_df_code_based["Field"] == Field_type)]
+
+                            Network_total_df_code_based = Network_total_df_code_based[(
+                                Network_total_df_code_based['Year'] == year)]
+                            print(Network_total_df_code_based)
+
+                            avg_val_from_code_network_df = Network_total_df_code_based['Degree Centrality'].mean(
+                            )
+                            print(avg_val_from_code_network_df)
+
+                            sub_value = avg_val_from_filtered_network_df - avg_val_from_code_network_df
+                            print(sub_value)
+
+                            index = year_arr.index(year)
+                            patt_count_array[index] = sub_value
+                            print(patt_count_array)
+                        else:
+                            continue
+                    else:
+                        continue
+                else:
+                    continue
+            else:
+                continue
+
+        else:
+            continue
+
+    return patt_count_array
 
 
 # NUTS3_file_path, IPR_file_path, abs_path):
