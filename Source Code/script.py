@@ -449,9 +449,13 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code, output_di
 
     output_dict["Total EU contribution for firms (aggregated per region/year)"] += For_Col_BD(year, H2020_df_DED51_prc)
     
-#     ######### FOR COLUMN BD Total co-financing of firms (aggregated per region/year)
+#     ######### FOR COLUMN BE Total budget of firms (aggregated per region/year)
 
     output_dict["Total budget of firms (aggregated per region/year)"] += For_Col_BE(year, H2020_df_DED51_prc)
+
+#     ######### FOR COLUMN BF Number of projects with firms exits
+
+    output_dict["Number of projects with firms exits"] += For_Col_BF(year, H2020_df_DED51_pub)
 
     return output_dict
 
@@ -1326,6 +1330,28 @@ def For_Col_BE(year_arr, H2020_df_DED51_prc: pd.DataFrame):
         h2020_total_cost_count.append(total_cost_sum)
 
     return h2020_total_cost_count
+
+def For_Col_BF(year_arr, H2020_df_DED51_pub: pd.DataFrame):
+    
+    H2020_df_filtered_by_Project_ID_unq = H2020_df_DED51_pub.drop_duplicates(subset='Project ID', keep="first")
+    
+    print(H2020_df_filtered_by_Project_ID_unq)
+    
+    h2020_exit_count = []
+    for year in year_arr:
+        print("For ", year)
+
+        df1 = H2020_df_filtered_by_Project_ID_unq[(
+            H2020_df_filtered_by_Project_ID_unq['Contract signature date'].dt.strftime('%Y') == str(year))]
+        print(df1)
+        
+        exit_count = (df1['Exit (1=exit)'] == 1).sum()
+        print(exit_count)
+        
+        h2020_exit_count.append(exit_count)
+
+    print(h2020_exit_count)
+    return h2020_exit_count
 
 
 # NUTS3_file_path, IPR_file_path, abs_path):
