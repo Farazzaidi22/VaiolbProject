@@ -1412,37 +1412,45 @@ def For_Col_BG_and_BH(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.D
 
                     Network_total_df_filtered = Network_total_df[Network_total_df["NUTS 3 Code"].isin(
                         H2020_uniq_nuts3_code_list_filtered)]
-
+                    
                     if not Network_total_df_filtered.empty:
-                        Network_total_df_filtered = Network_total_df_filtered[
-                            Network_total_df_filtered['Year'] == year]
+                        Network_total_df_filtered = Network_total_df_filtered[(
+                            Network_total_df_filtered["Field"] == Field_type)]
+                        
                         print(Network_total_df_filtered)
 
                         if not Network_total_df_filtered.empty:
-                            avg_val_from_filtered_network_df = Network_total_df_filtered['Degree Centrality'].mean(
-                            )
-                            print(avg_val_from_filtered_network_df)
+                            Network_total_df_filtered = Network_total_df_filtered[
+                                Network_total_df_filtered['Year'] == year]
+                            print(Network_total_df_filtered)
 
-                            Network_total_df_code_based = Network_total_df[(
-                                Network_total_df["NUTS 3 Code"] == code)]
+                            if not Network_total_df_filtered.empty:
+                                avg_val_from_filtered_network_df = Network_total_df_filtered['Degree Centrality'].mean(
+                                )
+                                print(avg_val_from_filtered_network_df)
 
-                            Network_total_df_code_based = Network_total_df_code_based[(
-                                Network_total_df_code_based["Field"] == Field_type)]
+                                Network_total_df_code_based = Network_total_df[(
+                                    Network_total_df["NUTS 3 Code"] == code)]
 
-                            Network_total_df_code_based = Network_total_df_code_based[(
-                                Network_total_df_code_based['Year'] == year)]
-                            print(Network_total_df_code_based)
+                                Network_total_df_code_based = Network_total_df_code_based[(
+                                    Network_total_df_code_based["Field"] == Field_type)]
 
-                            avg_val_from_code_network_df = Network_total_df_code_based['Degree Centrality'].mean(
-                            )
-                            print(avg_val_from_code_network_df)
+                                Network_total_df_code_based = Network_total_df_code_based[(
+                                    Network_total_df_code_based['Year'] == year)]
+                                print(Network_total_df_code_based)
 
-                            sub_value = avg_val_from_filtered_network_df - avg_val_from_code_network_df
-                            print(sub_value)
+                                avg_val_from_code_network_df = Network_total_df_code_based['Degree Centrality'].mean(
+                                )
+                                print(avg_val_from_code_network_df)
 
-                            index = year_arr.index(year)
-                            patt_count_array[index] = sub_value
-                            print(patt_count_array)
+                                sub_value = avg_val_from_filtered_network_df - avg_val_from_code_network_df
+                                print(sub_value)
+
+                                index = year_arr.index(year)
+                                patt_count_array[index] = sub_value
+                                print(patt_count_array)
+                            else:
+                                continue
                         else:
                             continue
                     else:
