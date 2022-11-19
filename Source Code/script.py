@@ -777,7 +777,7 @@ def For_Col_U(year_arr, H2020_df_DED51_prc: pd.DataFrame):
 
             for H2020_df_prc_index, H2020_df_prc_row in H2020_df_Filtered_by_Year.iterrows():
 
-                sub = H2020_df_prc_row['H2020 Total Cost'] - H2020_df_prc_row['Own funds']
+                sub = H2020_df_prc_row['H2020 Total Cost'] - H2020_df_prc_row['H2020 Net EU Contribution']
                 sum = sum + sub
 
             index = year_arr.index(year)
@@ -1157,7 +1157,7 @@ def For_Col_AG(year_arr, H2020_df_DED51_hes_and_rec: pd.DataFrame):
             H2020_df_DED51_hes_and_rec['Contract signature date'].dt.strftime('%Y') == str(year))]
         print(H2020_df_DED51_prc_filtered)
 
-        sum_of_col = H2020_df_DED51_prc_filtered['Own funds'].sum(
+        sum_of_col = H2020_df_DED51_prc_filtered['H2020 Net EU Contribution'].sum(
         )
         print(sum_of_col)
 
@@ -1419,8 +1419,7 @@ def For_Col_BG_and_BH(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.D
                             print(Network_total_df_filtered)
 
                             if not Network_total_df_filtered.empty:
-                                avg_val_from_filtered_network_df = Network_total_df_filtered['Degree Centrality'].mean(
-                                )
+                                avg_val_from_filtered_network_df = Network_total_df_filtered['Degree Centrality'].mean()
                                 print(avg_val_from_filtered_network_df)
 
                                 Network_total_df_code_based = Network_total_df[(
@@ -1433,8 +1432,7 @@ def For_Col_BG_and_BH(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.D
                                     Network_total_df_code_based['Year'] == year)]
                                 print(Network_total_df_code_based)
 
-                                avg_val_from_code_network_df = Network_total_df_code_based['Degree Centrality'].mean(
-                                )
+                                avg_val_from_code_network_df = Network_total_df_code_based['Degree Centrality']
                                 print(avg_val_from_code_network_df)
 
                                 sub_value = avg_val_from_filtered_network_df - avg_val_from_code_network_df
@@ -1701,17 +1699,17 @@ def Start_Editing(NUTS3_file_path, H2020_file_path, IPR_file_path, Patents_file_
          Brico_file_path, Network_total_file_path, Patents_Social_file_path)
 
 
-NUTS3_file_path = "E:\Freelance/vaiolb\Main\Input_output/NUTS3.xlsx"
-H2020_file_path = "E:\Freelance/vaiolb\Main\Input_output/02 H2020 NOVEM 22.xlsx"
-IPR_file_path = "E:\Freelance/vaiolb\Main\Input_output/IPR(modified).xlsx"
-Patents_file_path = "E:\Freelance/vaiolb\Main\Input_output/PATENTS.csv"
-Brico_file_path = "E:\Freelance/vaiolb\Main\Input_output/07 BRICO.xlsx"
-Network_total_file_path = "E:\Freelance/vaiolb\Main\Input_output/06 NETWORK TOTALS.xlsx"
-Patents_Social_file_path = "E:\Freelance/vaiolb\Main\Input_output/05 PATENTS SOCIAL.xlsx"
+# NUTS3_file_path = "E:\Freelance/vaiolb\Main\Input_output/NUTS3.xlsx"
+# H2020_file_path = "E:\Freelance/vaiolb\Main\Input_output/02 H2020 NOVEM 22.xlsx"
+# IPR_file_path = "E:\Freelance/vaiolb\Main\Input_output/IPR(modified).xlsx"
+# Patents_file_path = "E:\Freelance/vaiolb\Main\Input_output/PATENTS.csv"
+# Brico_file_path = "E:\Freelance/vaiolb\Main\Input_output/07 BRICO.xlsx"
+# Network_total_file_path = "E:\Freelance/vaiolb\Main\Input_output/06 NETWORK TOTALS.xlsx"
+# Patents_Social_file_path = "E:\Freelance/vaiolb\Main\Input_output/05 PATENTS SOCIAL.xlsx"
 
 
-abs_path = Path(H2020_file_path).parent
+# abs_path = Path(H2020_file_path).parent
 
 
-main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path,
-     Brico_file_path, Network_total_file_path, Patents_Social_file_path)
+# main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file_path,
+#      Brico_file_path, Network_total_file_path, Patents_Social_file_path)
