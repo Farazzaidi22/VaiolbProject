@@ -1432,7 +1432,7 @@ def For_Col_BG_and_BH(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.D
                                     Network_total_df_code_based['Year'] == year)]
                                 print(Network_total_df_code_based)
 
-                                avg_val_from_code_network_df = Network_total_df_code_based['Degree Centrality']
+                                avg_val_from_code_network_df = Network_total_df_code_based['Degree Centrality'].mean()
                                 print(avg_val_from_code_network_df)
 
                                 sub_value = avg_val_from_filtered_network_df - avg_val_from_code_network_df
