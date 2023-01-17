@@ -1563,6 +1563,8 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
 
     years = Extract_Year_From_Dates(H2020_df, "Project End Date", years)
     years.sort()
+    
+    years = years[: -1]
     print(years)
 
 
