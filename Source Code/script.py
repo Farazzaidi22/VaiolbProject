@@ -455,7 +455,7 @@ def Cals_For_Codes(H2020_df: pd.DataFrame, IPR_df: pd.DataFrame, code, output_di
 
     ######### FOR COLUMN BF Number of projects with firms exits
 
-        output_dict["Number of projects with firms exits"] += For_Col_BF(year, H2020_df_DED51_pub)
+        output_dict["Number of projects with firms exits"] += For_Col_BF(year, H2020_df, H2020_df_DED51_pub)
 
     ######### FOR COLUMN BG Difference to AVERAGE Degree Centrality (social challenge patents)
 
@@ -1325,8 +1325,7 @@ def For_Col_BE(year_arr, H2020_df_DED51_prc: pd.DataFrame):
     for year in year_arr:
         print("For ", year)
 
-        df1 = H2020_df_DED51_prc[(
-            H2020_df_DED51_prc['Contract signature date'].dt.strftime('%Y') == str(year))]
+        df1 = H2020_df_DED51_prc[(H2020_df_DED51_prc['Contract signature date'].dt.strftime('%Y') == str(year))]
         print(df1)
 
         total_cost_sum = df1['H2020 Total Cost'].apply(
@@ -1339,28 +1338,45 @@ def For_Col_BE(year_arr, H2020_df_DED51_prc: pd.DataFrame):
     return h2020_total_cost_count
 
 
-def For_Col_BF(year_arr, H2020_df_DED51_pub: pd.DataFrame):
+def For_Col_BF(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFrame):
 
-    h2020_exit_count = []
+    patt_count_array = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+
     for year in year_arr:
         print("For ", year)
+        
+        H2020_df_filtered = H2020_df_DED51_pub[(H2020_df_DED51_pub['Contract signature date'].dt.strftime('%Y') == str(year))]
+        print(H2020_df_filtered)
+        
+        if not H2020_df_filtered.empty:
+            H2020_df_filtered_by_unq = H2020_df_filtered.drop_duplicates(subset='Project ID', keep="first")
+            print(H2020_df_filtered_by_unq)
+            
+            for index, row in H2020_df_filtered_by_unq.iterrows():
 
-        df1 = H2020_df_DED51_pub[(
-            H2020_df_DED51_pub['Contract signature date'].dt.strftime('%Y') == str(year))]
-        print(df1)
+                project_id = row['Project ID']
+                print(project_id)
+                
+                H2020_df_filtered = H2020_df.loc[H2020_df["Project ID"] == project_id]
+                print(H2020_df_filtered)
 
-        H2020_df_filtered_by_Project_ID_unq = df1.drop_duplicates(
-            subset='Project ID', keep="first")
+                if not H2020_df_filtered.empty:
+                    H2020_df_filtered = H2020_df_filtered[(H2020_df_filtered['Contract signature date'].dt.strftime('%Y') == str(year))]
+                    print(H2020_df_filtered)
+                    
+                    if not H2020_df_filtered.empty:
+                        exit_count = (H2020_df_filtered['Exit (1=exit)'] == 1).sum()
 
-        print(H2020_df_filtered_by_Project_ID_unq)
+                        print(exit_count)
+                        
+                        if exit_count > 0:
+                            index = year_arr.index(year)
+                            patt_count_array[index] += 1
+                            print(patt_count_array)
 
-        exit_count = (df1['Exit (1=exit)'] == 1).sum()
-        print(exit_count)
 
-        h2020_exit_count.append(exit_count)
+    return patt_count_array
 
-    print(h2020_exit_count)
-    return h2020_exit_count
 
 
 def For_Col_BG_and_BH(year_arr, H2020_df: pd.DataFrame, H2020_df_DED51_pub: pd.DataFrame, Network_total_df: pd.DataFrame, Field_type, code):
@@ -1591,7 +1607,7 @@ def main(NUTS3_file_path, H2020_file_path, IPR_file_path, abs_path, Patents_file
     nut3_code_list = NUTS3_df.get('All regions')['Code 2021'].unique()
 
     # nut3_code_list = ['DED51', 'ES300', 'ES705', 'FRK24']
-    # nut3_code_list = ['DED51']
+    # nut3_code_list = ['ES511']
 
     # print(nut3_code_list)
 
